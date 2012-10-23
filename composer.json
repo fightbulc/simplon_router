@@ -1,0 +1,28 @@
+{
+    "name": "simplon/router",
+    "description": "Catch requests, attach callbacks and respond w/ JSON-RPC handling",
+    "homepage": "https://github.com/fightbulc/simplon_router",
+    "version": "0.5.0",
+    "type": "library",
+    "keywords": ["request", "respond", "callbacks"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tino Ehrich",
+            "email": "opensource@efides.com",
+            "role": "developer"
+        }
+    ],
+
+    "minimum-stability": "dev",
+
+    "require": {
+        "php": ">=5.3.3"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Simplon\\Router\\": "src/"
+        }
+    }
+}
