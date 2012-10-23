@@ -18,6 +18,9 @@
       'all'   => '*(.*?)',
     );
 
+    /** @var bool */
+    private $_useQueryString = FALSE;
+
     // ##########################################
 
     /**
@@ -38,11 +41,11 @@
     // ##########################################
 
     /**
-     * @return Request
+     * @return \Simplon\Border\Request
      */
     protected function getRequestInstance()
     {
-      return Request::getInstance();
+      return \Simplon\Border\Request::getInstance();
     }
 
     // ##########################################
@@ -77,6 +80,50 @@
       $_routes = $this->_getRoutes();
       $_routes[$route] = $callback;
       $this->_routes = $_routes;
+
+      return $this;
+    }
+
+    // ##########################################
+
+    /**
+     * @return bool
+     */
+    protected function getUseQueryString()
+    {
+      return $this->_useQueryString;
+    }
+
+    // ##########################################
+
+    /**
+     * @return string
+     */
+    protected function getRequestedRoute()
+    {
+      // return path info
+      if($this->getUseQueryString() === FALSE)
+      {
+        return $this
+          ->getRequestInstance()
+          ->getPathInfo();
+      }
+
+      // return query string
+      return $this
+        ->getRequestInstance()
+        ->getQueryString();
+    }
+
+    // ##########################################
+
+    /**
+     * @param bool $use
+     * @return Router
+     */
+    public function setUseQueryString($use = FALSE)
+    {
+      $this->_useQueryString = $use;
 
       return $this;
     }
@@ -133,6 +180,9 @@
         $route = str_replace(':' . $type, $regexp, $route);
       }
 
+      // make sure we got a leading slash
+      $route = '/' . ltrim($route, '/');
+
       // add final slash
       $route .= '/*';
 
@@ -157,9 +207,7 @@
         ->getRequestInstance()
         ->getMethod();
 
-      $requestRoute = $this
-        ->getRequestInstance()
-        ->getPathInfo();
+      $requestRoute = $this->getRequestedRoute();
 
       foreach($_routes as $route => $callback)
       {
