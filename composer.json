@@ -1,10 +1,10 @@
 {
     "name": "simplon/router",
-    "description": "Catch requests, attach callbacks and respond w/ JSON-RPC handling",
+    "description": "Simple routing incl. JSON-RPC",
     "homepage": "https://github.com/fightbulc/simplon_router",
     "version": "0.5.0",
     "type": "library",
-    "keywords": ["request", "respond", "callbacks"],
+    "keywords": ["request", "respond", "callbacks", "json-rpc"],
     "license": "MIT",
     "authors": [
         {
@@ -17,7 +17,8 @@
     "minimum-stability": "dev",
 
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "simplon/border": "dev-master"
     },
 
     "autoload": {
