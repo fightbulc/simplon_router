@@ -19,7 +19,7 @@
     );
 
     /** @var bool */
-    private $_useQueryString = FALSE;
+    private $_routingViaQueryString = FALSE;
 
     // ##########################################
 
@@ -71,38 +71,12 @@
     // ##########################################
 
     /**
-     * @param $route
-     * @param $callback
-     * @return Router
-     */
-    protected function setRoute($route, $callback)
-    {
-      $_routes = $this->_getRoutes();
-      $_routes[$route] = $callback;
-      $this->_routes = $_routes;
-
-      return $this;
-    }
-
-    // ##########################################
-
-    /**
-     * @return bool
-     */
-    protected function getUseQueryString()
-    {
-      return $this->_useQueryString;
-    }
-
-    // ##########################################
-
-    /**
      * @return string
      */
-    protected function getRequestedRoute()
+    protected function _getRequestedRoute()
     {
       // return path info
-      if($this->getUseQueryString() === FALSE)
+      if($this->_isRoutingViaQueryString() === FALSE)
       {
         return $this
           ->getRequestInstance()
@@ -118,12 +92,22 @@
     // ##########################################
 
     /**
+     * @return bool
+     */
+    protected function _isRoutingViaQueryString()
+    {
+      return $this->_routingViaQueryString;
+    }
+
+    // ##########################################
+
+    /**
      * @param bool $use
      * @return Router
      */
-    public function setUseQueryString($use = FALSE)
+    public function enableRoutingViaQueryString($use)
     {
-      $this->_useQueryString = $use;
+      $this->_routingViaQueryString = $use !== TRUE ? FALSE : TRUE;
 
       return $this;
     }
@@ -155,11 +139,11 @@
         $callback = $args[1];
       }
 
-      // compile route
-      $route = $this->compileRoute($method, $route);
+      // compile route to regex
+      $regex = $this->_compileRoute($route);
 
       // set route
-      $this->setRoute($route, $callback);
+      $this->_setRoute($method, $regex, $callback);
 
       return $this;
     }
@@ -167,11 +151,10 @@
     // ##########################################
 
     /**
-     * @param $method
      * @param $route
      * @return string
      */
-    protected function compileRoute($method, $route)
+    protected function _compileRoute($route)
     {
       $wildcardTypes = $this->_getWildcardTypes();
 
@@ -189,7 +172,30 @@
       // escape fwd slash
       $route = str_replace('/', '\/', $route);
 
-      return $method . "::^$route$";
+      return "^$route$";
+    }
+
+    // ##########################################
+
+    /**
+     * @param $method
+     * @param $regex
+     * @param $callback
+     * @return Router
+     */
+    protected function _setRoute($method, $regex, $callback)
+    {
+      $_routes = $this->_getRoutes();
+
+      $_routes[] = array(
+        'method'   => $method,
+        'regex'    => $regex,
+        'callback' => $callback,
+      );
+
+      $this->_routes = $_routes;
+
+      return $this;
     }
 
     // ##########################################
@@ -207,13 +213,15 @@
         ->getRequestInstance()
         ->getMethod();
 
-      $requestRoute = $this->getRequestedRoute();
+      $requestRoute = $this->_getRequestedRoute();
 
-      foreach($_routes as $route => $callback)
+      foreach($_routes as $route)
       {
-        list($method, $regex) = explode('::', $route);
+        $method = $route['method'];
+        $regex = $route['regex'];
+        $callback = $route['callback'];
 
-        if($method == $requestMethod && preg_match('/' . $regex . '/ui', $requestRoute, $matched))
+        if(strpos($method, $requestMethod) !== FALSE && preg_match('/' . $regex . '/ui', $requestRoute, $matched))
         {
           // leave out the match
           array_shift($matched);
