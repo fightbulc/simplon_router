@@ -12,10 +12,12 @@
 
     /** @var array */
     private $_wildcardTypes = array(
-      'num'   => '([0-9]+)',
-      'alpha' => '([0-9A-Za-z]+)',
-      'hex'   => '([0-9A-Fa-f]+)',
-      'all'   => '*(.*?)',
+      'num'    => '([0-9]+)',
+      'alpha'  => '([0-9A-Za-z_\-]+)',
+      'hex'    => '([0-9A-Fa-f]+)',
+      'base64' => '([0-9A-Za-z+/=.\-_]+)',
+      'query'  => '\?(.*?)',
+      'all'    => '*(.*?)',
     );
 
     /** @var bool */
