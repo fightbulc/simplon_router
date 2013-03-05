@@ -15,7 +15,7 @@
   echo '</ul>';
 
   echo '<hr>';
-  
+
   // ############################################
 
   echo '<h1>Callback Output</h1>';
@@ -49,7 +49,7 @@
   // ############################################
 
   \Simplon\Router\Router::init()
-    ->setUseQueryString(TRUE)
+    ->enableRoutingViaQueryString(TRUE)
     ->addRoute('GET', '/love/milk/:alpha', $milk)
     ->addRoute('GET', '/love/chocolate/:num/:alpha', $chocolate)
     ->addRoute('GET', '/love/beer/:all', $beer)
