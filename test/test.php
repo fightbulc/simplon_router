@@ -1,5 +1,7 @@
 <?php
 
+  use Simplon\Router\Router;
+
   require __DIR__ . '/../vendor/autoload.php';
 
   echo '<h1>Simplon/Router Test</h1>';
@@ -8,10 +10,10 @@
   echo '<h3>Valid testing routes. Click them:</h3>';
 
   echo '<ul>';
-    echo '<li><a href="test.php?/love/milk/honey">/love/milk/honey</a></li>';
-    echo '<li><a href="test.php?/love/chocolate/6/summer">/love/chocolate/6/summer</a></li>';
-    echo '<li><a href="test.php?/love/beer/heineken/weizen/bit/sagres">/love/beer/heineken/weizen/bit/sagres</a></li>';
-    echo '<li><a href="test.php?/love/whatever/else/comes/around">/love/whatever/else/comes/around</a></li>';
+  echo '<li><a href="test.php?/love/milk/honey">/love/milk/honey</a></li>';
+  echo '<li><a href="test.php?/love/chocolate/6/summer">/love/chocolate/6/summer</a></li>';
+  echo '<li><a href="test.php?/love/beer/heineken/weizen/bit/sagres">/love/beer/heineken/weizen/bit/sagres</a></li>';
+  echo '<li><a href="test.php?/love/whatever/else/comes/around">/love/whatever/else/comes/around</a></li>';
   echo '</ul>';
 
   echo '<hr>';
@@ -48,7 +50,7 @@
 
   // ############################################
 
-  \Simplon\Router\Router::init()
+  (new Router())
     ->enableRoutingViaQueryString(TRUE)
     ->addRoute('GET', '/love/milk/:alpha', $milk)
     ->addRoute('GET', '/love/chocolate/:num/:alpha', $chocolate)

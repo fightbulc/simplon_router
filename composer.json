@@ -1,29 +1,29 @@
 {
-    "name": "simplon/router",
-    "description": "Simple routing incl. JSON-RPC",
-    "homepage": "https://github.com/fightbulc/simplon_router",
-    "version": "0.5.0",
-    "type": "library",
-    "keywords": ["request", "respond", "callbacks", "json-rpc"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Tino Ehrich",
-            "email": "opensource@efides.com",
-            "role": "developer"
-        }
-    ],
-
-    "minimum-stability": "dev",
-
-    "require": {
-        "php": ">=5.3.3",
-        "simplon/border": "dev-master"
-    },
-
-    "autoload": {
-        "psr-0": {
-            "Simplon\\Router\\": "src/"
-        }
+  "name": "simplon/router",
+  "description": "Simple routing incl. JSON-RPC",
+  "homepage": "https://github.com/fightbulc/simplon_router",
+  "version": "0.5.1",
+  "type": "library",
+  "keywords": ["request", "respond", "callbacks", "json-rpc"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tino Ehrich",
+      "email": "opensource@efides.com",
+      "role": "developer"
     }
+  ],
+
+  "minimum-stability": "dev",
+
+  "require": {
+    "php": ">=5.4",
+    "simplon/border": "0.5.2"
+  },
+
+  "autoload": {
+    "psr-0": {
+      "Simplon\\Router": "src/"
+    }
+  }
 }

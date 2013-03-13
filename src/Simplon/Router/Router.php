@@ -2,23 +2,25 @@
 
   namespace Simplon\Router;
 
+  use Simplon\Border\Request;
+
   class Router
   {
     /** @var Router */
     private static $_instance;
 
     /** @var array */
-    private $_routes = array();
+    private $_routes = [];
 
     /** @var array */
-    private $_wildcardTypes = array(
+    private $_wildcardTypes = [
       'num'    => '([0-9]+)',
       'alpha'  => '([0-9A-Za-z_\-]+)',
       'hex'    => '([0-9A-Fa-f]+)',
       'base64' => '([0-9A-Za-z+/=.\-_]+)',
       'query'  => '\?(.*?)',
       'all'    => '*(.*?)',
-    );
+    ];
 
     /** @var bool */
     private $_routingViaQueryString = FALSE;
@@ -26,28 +28,11 @@
     // ##########################################
 
     /**
-     * For chaining below PHP 5.4
-     *
-     * @return Router
-     */
-    public static function init()
-    {
-      if(! isset(Router::$_instance))
-      {
-        Router::$_instance = new Router();
-      }
-
-      return Router::$_instance;
-    }
-
-    // ##########################################
-
-    /**
-     * @return \Simplon\Border\Request
+     * @return Request
      */
     protected function getRequestInstance()
     {
-      return \Simplon\Border\Request::getInstance();
+      return Request::getInstance();
     }
 
     // ##########################################
@@ -105,7 +90,7 @@
 
     /**
      * @param bool $use
-     * @return Router
+     * @return $this
      */
     public function enableRoutingViaQueryString($use)
     {
@@ -117,7 +102,7 @@
     // ##########################################
 
     /**
-     * @return Router
+     * @return $this
      */
     public function addRoute()
     {
@@ -183,17 +168,17 @@
      * @param $method
      * @param $regex
      * @param $callback
-     * @return Router
+     * @return $this
      */
     protected function _setRoute($method, $regex, $callback)
     {
       $_routes = $this->_getRoutes();
 
-      $_routes[] = array(
+      $_routes[] = [
         'method'   => $method,
         'regex'    => $regex,
         'callback' => $callback,
-      );
+      ];
 
       $this->_routes = $_routes;
 
