@@ -2,7 +2,7 @@
   "name": "simplon/router",
   "description": "Simple routing incl. JSON-RPC",
   "homepage": "https://github.com/fightbulc/simplon_router",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "type": "library",
   "keywords": ["request", "respond", "callbacks", "json-rpc"],
   "license": "MIT",
