@@ -24,7 +24,7 @@ class Router
      * @param null $requestedRoute
      *
      * @return string
-     * @throws \Exception
+     * @throws RouterException
      */
     public static function observe(array $routes, $requestedRoute = null)
     {
@@ -58,7 +58,7 @@ class Router
             }
         }
 
-        throw new \Exception('Failed to match any route');
+        throw new RouterException('Failed to match any route');
     }
 
     /**
@@ -105,6 +105,6 @@ class Router
             return (string)call_user_func_array($route['callback'], $params);
         }
 
-        throw new \Exception('A route requires either "controller" or a "callback"');
+        throw new RouterException('A route requires either "controller" or a "callback"');
     }
 }
