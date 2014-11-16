@@ -2,6 +2,8 @@
 
 namespace Simplon\Router;
 
+use Simplon\Error\ErrorResponse;
+
 /**
  * Router
  * @package Simplon\Router
@@ -86,7 +88,7 @@ class Router
      * @param array $route
      * @param array $params
      *
-     * @return string
+     * @return string|ErrorResponse
      * @throws \Exception
      */
     private static function handleRoute(array $route, array $params = [])
@@ -96,13 +98,13 @@ class Router
         {
             list($controller, $method) = explode('::', $route['controller']);
 
-            return (string)call_user_func_array([(new $controller), $method], $params);
+            return call_user_func_array([(new $controller), $method], $params);
         }
 
         // handling via closure
         elseif (isset($route['callback']))
         {
-            return (string)call_user_func_array($route['callback'], $params);
+            return call_user_func_array($route['callback'], $params);
         }
 
         throw new RouterException('A route requires either "controller" or a "callback"');
