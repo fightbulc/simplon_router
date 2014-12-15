@@ -26,7 +26,7 @@ class Router
      * @param null $requestedRoute
      * @param null $dispatcher
      *
-     * @return string
+     * @return ErrorResponse|string
      * @throws RouterException
      */
     public static function observe(array $routes, $requestedRoute = null, $dispatcher = null)
