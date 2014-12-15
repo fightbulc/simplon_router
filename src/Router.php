@@ -24,17 +24,25 @@ class Router
     /**
      * @param array $routes
      * @param null $requestedRoute
+     * @param null $dispatcher
      *
      * @return string
      * @throws RouterException
      */
-    public static function observe(array $routes, $requestedRoute = null)
+    public static function observe(array $routes, $requestedRoute = null, $dispatcher = null)
     {
         self::setup($requestedRoute);
 
         // loop through all defined routes
         foreach ($routes as $route)
         {
+            // handle route before passing it on to the controller
+            if ($dispatcher instanceof \Closure)
+            {
+                self::$route = $dispatcher(self::$route);
+            }
+
+            // handle controller matching
             if (preg_match_all('#' . $route['pattern'] . '/*#i', self::$route, $match, PREG_SET_ORDER))
             {
                 // handle request method restrictions
@@ -89,7 +97,7 @@ class Router
      * @param array $params
      *
      * @return string|ErrorResponse
-     * @throws \Exception
+     * @throws RouterException
      */
     private static function handleRoute(array $route, array $params = [])
     {
