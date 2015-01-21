@@ -2,8 +2,6 @@
 
 namespace Simplon\Router;
 
-use Simplon\Error\ErrorResponse;
-
 /**
  * Router
  * @package Simplon\Router
@@ -26,7 +24,7 @@ class Router
      * @param null $requestedRoute
      * @param null $dispatcher
      *
-     * @return ErrorResponse|string
+     * @return string
      * @throws RouterException
      */
     public static function observe(array $routes, $requestedRoute = null, $dispatcher = null)
@@ -43,7 +41,7 @@ class Router
             }
 
             // handle controller matching
-            if (preg_match_all('#' . $route['pattern'] . '/*#i', self::$route, $match, PREG_SET_ORDER))
+            if (preg_match_all('|' . str_replace('|', '\|', $route['pattern']) . '/*|i', self::$route, $match, PREG_SET_ORDER))
             {
                 // handle request method restrictions
                 if (isset($route['request']) && strpos(strtoupper($route['request']), self::$request) === false)
@@ -96,7 +94,7 @@ class Router
      * @param array $route
      * @param array $params
      *
-     * @return string|ErrorResponse
+     * @return string
      * @throws RouterException
      */
     private static function handleRoute(array $route, array $params = [])
@@ -115,6 +113,6 @@ class Router
             return call_user_func_array($route['callback'], $params);
         }
 
-        throw new RouterException('A route requires either "controller" or a "callback"');
+        throw new RouterException('A route requires either $router["controller"] or $router["callback"]');
     }
 }
