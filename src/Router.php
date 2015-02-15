@@ -10,41 +10,73 @@ namespace Simplon\Router;
 class Router
 {
     /**
-     * @var string
+     * @var array
      */
-    private static $route;
+    private $routes;
+
+    /**
+     * @var \Closure[]
+     */
+    private $filters;
 
     /**
      * @var string
      */
-    private static $request;
+    private $requestedRoute;
+
+    /**
+     * @var string
+     */
+    private $request;
 
     /**
      * @param array $routes
-     * @param null $requestedRoute
-     * @param null $dispatcher
+     * @param string|null $requestedRoute
+     */
+    public function __construct(array $routes, $requestedRoute = null)
+    {
+        // set all available routes
+        $this->routes = $routes;
+
+        // set route
+        $this->requestedRoute = $requestedRoute ?: $_SERVER['PATH_INFO'];
+
+        // clean route
+        $this->requestedRoute = rtrim($this->requestedRoute, '/');
+
+        // set request method
+        $this->request = strtoupper($_SERVER['REQUEST_METHOD']);
+    }
+
+    /**
+     * @param callable $filter
      *
+     * @return Router
+     */
+    public function addFilter(\Closure $filter)
+    {
+        $this->filters[] = $filter;
+
+        return $this;
+    }
+
+    /**
      * @return string
      * @throws RouterException
      */
-    public static function observe(array $routes, $requestedRoute = null, $dispatcher = null)
+    public function observe()
     {
-        self::setup($requestedRoute);
-
         // loop through all defined routes
-        foreach ($routes as $route)
+        foreach ($this->routes as $route)
         {
-            // handle route before passing it on to the controller
-            if ($dispatcher instanceof \Closure)
-            {
-                self::$route = $dispatcher(self::$route);
-            }
+            // apply filter
+            $route = $this->applyFilters($route);
 
             // handle controller matching
-            if (preg_match_all('|' . str_replace('|', '\|', $route['pattern']) . '/*|i', self::$route, $match, PREG_SET_ORDER))
+            if (preg_match_all('|' . str_replace('|', '\|', $route['pattern']) . '/*|i', $this->requestedRoute, $match, PREG_SET_ORDER))
             {
                 // handle request method restrictions
-                if (isset($route['request']) && strpos(strtoupper($route['request']), self::$request) === false)
+                if (isset($route['request']) && strpos(strtoupper($route['request']), $this->request) === false)
                 {
                     continue;
                 }
@@ -62,32 +94,11 @@ class Router
                 }
 
                 // dispatch
-                return self::handleRoute($route, $params);
+                return $this->handleRoute($route, $params);
             }
         }
 
         throw new RouterException('Failed to match any route');
-    }
-
-    /**
-     * @param null $route
-     *
-     * @return bool
-     */
-    private static function setup($route = null)
-    {
-        if ($route === null)
-        {
-            $route = $_SERVER['PATH_INFO'];
-        }
-
-        // set route
-        self::$route = rtrim($route, '/');
-
-        // set request method
-        self::$request = strtoupper($_SERVER['REQUEST_METHOD']);
-
-        return true;
     }
 
     /**
@@ -97,7 +108,7 @@ class Router
      * @return string
      * @throws RouterException
      */
-    private static function handleRoute(array $route, array $params = [])
+    private function handleRoute(array $route, array $params = [])
     {
         // handling via class
         if (isset($route['controller']))
@@ -114,5 +125,23 @@ class Router
         }
 
         throw new RouterException('A route requires either $router["controller"] or $router["callback"]');
+    }
+
+    /**
+     * @param $route
+     *
+     * @return string
+     */
+    private function applyFilters($route)
+    {
+        if (empty($this->filters) === false)
+        {
+            foreach ($this->filters as $filter)
+            {
+                $route = $filter($route);
+            }
+        }
+
+        return $route;
     }
 }

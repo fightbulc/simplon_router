@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/../src/Router.php';
+require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/TestController.php';
 
 $routes = [
@@ -26,6 +26,6 @@ $routes = [
     ],
 ];
 
-$response = \Simplon\Router\Router::observe($routes, $_GET['route']);
+$response = (new \Simplon\Router\Router($routes, $_GET['route']))->observe();
 
 echo $response;
