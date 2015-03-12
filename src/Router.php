@@ -5,7 +5,7 @@ namespace Simplon\Router;
 /**
  * Router
  * @package Simplon\Router
- * @author Tino Ehrich (tino@bigpun.me)
+ * @author  Tino Ehrich (tino@bigpun.me)
  */
 class Router
 {
@@ -30,7 +30,7 @@ class Router
     private $request;
 
     /**
-     * @param array $routes
+     * @param array       $routes
      * @param string|null $requestedRoute
      */
     public function __construct(array $routes, $requestedRoute = null)
@@ -75,6 +75,12 @@ class Router
             // handle controller matching
             if (preg_match_all('|' . str_replace('|', '\|', $route['pattern']) . '/*|i', $requestedRoute, $match, PREG_SET_ORDER))
             {
+                // if home pattern the requested route should be empty too
+                if (empty($route['pattern']) === true && empty($requestedRoute) === false)
+                {
+                    continue;
+                }
+
                 // handle request method restrictions
                 if (isset($route['request']) && strpos(strtoupper($route['request']), $this->request) === false)
                 {
