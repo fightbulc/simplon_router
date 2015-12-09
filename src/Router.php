@@ -30,7 +30,7 @@ class Router
     private $request;
 
     /**
-     * @param array       $routes
+     * @param array $routes
      * @param string|null $requestedRoute
      */
     public function __construct(array $routes, $requestedRoute = null)
@@ -49,7 +49,7 @@ class Router
     }
 
     /**
-     * @param callable $filter
+     * @param \Closure $filter
      *
      * @return Router
      */
@@ -71,6 +71,8 @@ class Router
         {
             // apply filter
             $requestedRoute = $this->applyFilters($this->requestedRoute);
+
+            $route['pattern'] = preg_replace('/(:\w+)/i', '*(\w+)*', $route['pattern']);
 
             // handle controller matching
             if (preg_match_all('|' . str_replace('|', '\|', $route['pattern']) . '/*|i', $requestedRoute, $match, PREG_SET_ORDER))
